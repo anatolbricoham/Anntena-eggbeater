@@ -1,28 +1,23 @@
 # Ajuste y pruebas
 
-## Material
-NanoVNA o analizador de antena, carga de 50 Ω, un receptor (SDR o transceptor) y, si puede ser, un walkie con antena vertical.
+## 1. Antes de medir
+- **Continuidad:** entre el vivo y la malla del conector debe haber **continuidad en DC**, porque cada lazo es una espira cerrada.
+- **Aislamiento:** los lazos A y B no se tocan entre sí y los reflectores no tocan los lazos.
+- **Cableado de la fase:** A+→B+ y A−→B− para RHCP.
 
-## 1. Comprobaciones antes de medir
-- **Aislamiento en continua:** entre el vivo y la malla del conector de bajada debe haber **continuidad** (baja resistencia en DC), porque cada lazo es una espira cerrada a través de su borne.
-- **Separación entre lazos:** comprueba que los lazos A y B no se tocan ni en el tope ni en el buje.
-- **Línea de fase:** vivo de A+ a B+ y malla de A− a B− para RHCP.
+## 2. ROE
+1. **Montaje:** antena en su sitio, o a más de 3 m del suelo y lejos de metal. Mide al final de la bajada, con el choque puesto.
+2. **Barrido:** 2 m de 135 a 155 MHz, 70 cm de 410 a 470 MHz.
+3. **Esperado (simulación):** ROE ≤ 1.1 en 145.8–146.0 y 435–438 MHz, y < 1.5 en una banda muy ancha.
+4. **Si el mínimo sale muy desplazado:**
+   - Primero revisa las medidas (entre ejes), las esquinas y las colas de la línea de fase.
+   - Después ajusta los laterales, igual en los dos lazos. En 2 m el perímetro cambia ~0.7 %/MHz, unos 4 mm por lateral; en 70 cm ~0.23 %/MHz, unos 0.5 mm por lateral.
 
-## 2. ROE / S11
-1. **Montaje de la medida:** coloca la antena en su sitio definitivo, o al menos a 3 m del suelo y lejos de objetos metálicos. Mide al final de la bajada, con el choque instalado.
-2. **Barrido:** 2 m de 140 a 150 MHz, 70 cm de 420 a 450 MHz.
-3. **Criterio:** ROE < 1.5 en toda la sub-banda de satélite (145.8–146.0 / 435–438). Lo esperable es 1.1–1.3.
-4. **Si el mínimo sale desplazado:**
-   - **Bajo en frecuencia:** los lazos son grandes. Acorta los laterales o los brazos M6 (en 2 m el perímetro cambia ~0.7 %/MHz, ≈4 mm por lateral; en 70 cm ~0.23 %/MHz, ≈0.4 mm por lateral).
-   - **Alto en frecuencia:** alarga, o separa un poco más las pestañas.
-   - **Mínimo con mucha reactancia:** revisa la longitud de la línea de fase (±10 mm en 2 m, ±3 mm en 70 cm).
+## 3. Polarización
+- **Con un walkie con antena vertical,** a distancia: gíralo de vertical a horizontal. La variación debe ser menor de 3 dB.
+- **Sentido:** cruzar la línea de fase en B (LHCP) debe hacer caer la señal en el cenit de un satélite o de una fuente RHCP conocida.
 
-## 3. Polarización circular
-- **Con walkie de antena vertical:** gira el walkie de vertical a horizontal apuntando a la eggbeater desde varios metros de altura (o desde abajo con la eggbeater en alto). La señal debe variar menos de 3 dB.
-- **Sentido de giro (RHCP/LHCP):** si tienes una helicoidal o una Yagi cruzada con polarización conocida, compara la recepción. Invertir B+ y B− debe hacer caer la señal más de 10 dB en el cenit.
-
-## 4. Prueba real con satélites
-1. **Pases:** predícelos con Gpredict, SatPC32 u Orbitron. Satélites de prueba: ISS (145.800 FM), SO-50, AO-91 y cubesats de telemetría en 435–438 MHz.
-2. **Qué anotar:** relación señal/ruido y elevación a la que se engancha y se pierde la señal.
-3. **Qué esperar:** con LNA en el mástil, señal útil desde ~5–10° de elevación en pases buenos.
-4. **SatNOGS:** si tienes una estación, sube las observaciones y compara con otras estaciones del mismo pase.
+## 4. Con satélites
+1. **Pases:** predícelos con Gpredict, SatPC32 u Orbitron. Prueba con la ISS (145.800 FM), SO-50 (436.795), AO-91 y las balizas de cubesats en 435–438 MHz.
+2. **Qué anotar:** la elevación a la que se engancha y se pierde la señal, y la S/N.
+3. **Qué esperar:** con LNA, señal desde 5–10° en pases buenos. Por el diagrama de K5OE, la señal debe mantenerse bastante constante durante todo el pase.

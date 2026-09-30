@@ -30,12 +30,20 @@ def geometry_cards(p):
         n = ns(math.dist(a, b))
         cards.append('GW %d %d %.5f %.5f %.5f %.5f %.5f %.5f %.5f' % (tag, n, *a, *b, rad))
         return tag, n
-    # lazo A en el plano XZ (z inferior 0, superior H)
-    fa = gw((-W/2, 0, 0), (W/2, 0, 0), r)              # lado inferior (alimentacion en el centro)
-    gw((W/2, 0, 0), (W/2, 0, H), r); gw((W/2, 0, H), (-W/2, 0, H), r); gw((-W/2, 0, H), (-W/2, 0, 0), r)
-    # lazo B en el plano YZ, desplazado dz hacia arriba
-    fb = gw((0, -W/2, dz), (0, W/2, dz), r)
-    gw((0, W/2, dz), (0, W/2, H + dz), r); gw((0, W/2, H + dz), (0, -W/2, H + dz), r); gw((0, -W/2, H + dz), (0, -W/2, dz), r)
+    if p.get('feed', 'bottom') == 'top':
+        # K5OE: alimentacion ARRIBA (lado superior partido, bornes en el tapon del mastil);
+        # el lado inferior es continuo y atraviesa el mastil. Lazo B desplazado dz hacia abajo.
+        fa = gw((-W/2, 0, H), (W/2, 0, H), r)
+        gw((W/2, 0, H), (W/2, 0, 0), r); gw((W/2, 0, 0), (-W/2, 0, 0), r); gw((-W/2, 0, 0), (-W/2, 0, H), r)
+        fb = gw((0, -W/2, H - dz), (0, W/2, H - dz), r)
+        gw((0, W/2, H - dz), (0, W/2, -dz), r); gw((0, W/2, -dz), (0, -W/2, -dz), r); gw((0, -W/2, -dz), (0, -W/2, H - dz), r)
+    else:
+        # lazo A en el plano XZ (z inferior 0, superior H)
+        fa = gw((-W/2, 0, 0), (W/2, 0, 0), r)              # lado inferior (alimentacion en el centro)
+        gw((W/2, 0, 0), (W/2, 0, H), r); gw((W/2, 0, H), (-W/2, 0, H), r); gw((-W/2, 0, H), (-W/2, 0, 0), r)
+        # lazo B en el plano YZ, desplazado dz hacia arriba
+        fb = gw((0, -W/2, dz), (0, W/2, dz), r)
+        gw((0, W/2, dz), (0, W/2, H + dz), r); gw((0, W/2, H + dz), (0, -W/2, H + dz), r); gw((0, -W/2, H + dz), (0, -W/2, dz), r)
     if p.get('Lr', 0) > 0:
         gw((-p['Lr']/2, 0, -p['D']), (p['Lr']/2, 0, -p['D']), p['rr'])
         gw((0, -p['Lr']/2, -p['D'] - 0.01), (0, p['Lr']/2, -p['D'] - 0.01), p['rr'])

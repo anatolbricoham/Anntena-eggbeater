@@ -1,90 +1,69 @@
-# Antena Eggbeater para satélites (2 m y 70 cm) con piezas impresas en 3D
+# Eggbeater II de K5OE (2 m y 70 cm) con piezas impresas en 3D
 
-Es una adaptación a **satélites LEO** de la [Antena Eggbeater V2 de EA5WA](https://www.ea5wa.com/antenas/antena-eggbeater-v2) (145 MHz), que a su vez se basa en la *Eggbeater II* de **K5OE** y en el trabajo de **EA4CYQ**.
+Es la **Eggbeater II de Jerry Brown, K5OE**, la antena omnidireccional con polarización circular que diseñó para satélites LEO. Se reproduce **con sus medidas originales**. Lo único añadido son las piezas de plástico impresas en 3D que sustituyen a los accesorios de PVC y a los taladros hechos a ojo. No se ha cambiado ninguna medida eléctrica.
 
-- **Sub-bandas de satélite:** la antena se ha reajustado para 145.8–146.0 MHz y 435–438 MHz.
-- **Reflector:** su altura se ha optimizado con NEC2 para enlaces con satélites.
-- **Piezas plásticas:** todas son impresas en 3D y paramétricas (OpenSCAD).
-
-| | 2 m (145.9 MHz) | 70 cm (436.5 MHz) |
+| | 2 m | 70 cm |
 |---|---|---|
-| Lazos (ancho × alto) | **433 × 669 mm** | **148 × 228 mm** |
-| Conductor | Pletina de Al 10×2 mm (U) + 2 varillas roscadas M6 | Varilla de Al o latón de 4 mm |
-| Desnivel entre lazos | 12 mm | 8 mm |
-| Reflector (2 varillas cruzadas Ø4) | **986 mm**, a **822 mm** bajo los lazos | **330 mm**, a **275 mm** bajo los lazos |
-| Línea de fase RG-62 (93 Ω) | **363 mm** de cable + 20 mm de colas | **116 mm** de cable + 10 mm de colas |
-| ROE simulada en la sub-banda | 1.02 / 1.02 / 1.01 | 1.01 / 1.03 / 1.04 |
-| Mástil (PVC) | Ø32 mm, unos 2 m | Ø25 mm, unos 1 m |
-| Polarización | RHCP (LHCP invirtiendo B+ y B−) | RHCP |
+| Lazos (ancho × alto, entre ejes) | **51 × 63 cm** | **17.1 × 20.9 cm** |
+| Conductor | Hilo de cobre #8 AWG (3.26 mm) | Igual, o varilla de 3 mm |
+| Reflectores (2 varillas de Al de 1/4" cruzadas) | **100.5 cm**, a **101 cm** bajo los lazos | **33.5 cm**, a **33 cm** bajo los lazos |
+| Línea de fase RG-62 (93 Ω) | **41.5 cm** con malla (se corta a 46.5 cm y se pelan 2.5 cm por extremo) | **13.5 cm** (se corta a 18.5 cm y se pelan 2.5 cm por extremo) |
+| Alimentación | Tapón en la punta del mástil; los lados inferiores atraviesan el tubo | Igual |
+| Polarización | RHCP (LHCP cruzando la línea de fase en B) | RHCP |
 
-![Antena 2 m](docs/img/montaje_2m.png)
+![Montaje 2 m](docs/img/montaje_2m.png)
 
-## Por qué se ha reajustado para satélites
-Un satélite a 500 km está a ~1700 km cuando se ve a 10° de elevación, y a 500 km cuando pasa por el cenit. A 10° eso supone **10.6 dB más de pérdida de trayecto**.
-Para un satélite, la antena ideal tiene más ganancia hacia el horizonte que hacia arriba. Con `sim/optimize.py` se buscó, en NEC2, la altura del reflector que **maximiza el peor margen de enlace entre 10° y 90°**:
+## Verificación por simulación (NEC2)
+Se modeló la geometría de K5OE **tal cual** en `sim/k5oe.py`, con nec2c. No se optimizó nada.
 
-![Diagrama 2 m](docs/img/diagrama_2m.png)
-![Diagrama 70 cm](docs/img/diagrama_70cm.png)
+| | Z entrada | ROE en la sub-banda de satélite | ROE < 1.5 | RHCP a 10° / 30° / 60° / 90° de elevación |
+|---|---|---|---|---|
+| 2 m (145.9 MHz) | 46.3 − j1.3 Ω | **1.08** | 136–151 MHz | +0.3 / −0.7 / −3.1 / −2.5 dBic |
+| 70 cm (436.5 MHz) | 51.2 − j0.5 Ω | **1.00–1.05** | 419–463 MHz | +0.1 / −0.8 / −3.2 / −2.8 dBic |
 
-Ganancia RHCP media en azimut, en dBic (2 m):
+![2 m](docs/img/diagrama_2m.png)
+![70 cm](docs/img/diagrama_70cm.png)
 
-| Elevación | 0° | 10° | 20° | 30° | 45° | 60° | 90° |
-|---|---|---|---|---|---|---|---|
-| **Optimizada (reflector 0.4 λ)** | −1.6 | −0.2 | **+0.3** | **+0.2** | −1.3 | −3.5 | −6.5 |
-| Reflector 0.5 λ (EA5WA/K5OE) | −1.2 | −0.5 | −0.7 | −1.7 | −3.7 | −4.4 | −3.6 |
-| Sin reflector | −2.9 | −2.1 | −1.6 | −1.3 | −1.3 | −1.6 | −2.1 |
-
-La versión optimizada concentra la ganancia entre 10° y 40° de elevación, que es donde un satélite LEO pasa la mayor parte del tiempo. En el cenit tiene menos ganancia, pero ahí el satélite está 3–4 veces más cerca.
-**Validación del modelo:** el mismo modelo, con las medidas originales de EA5WA a 145 MHz, da una ROE de **1.09**. EA5WA midió **1.1**.
+Con el reflector a ~½ λ, K5OE concentra la ganancia en los ángulos bajos (0–30°). Ahí es donde el satélite está más lejos y donde pasa más tiempo, y es la razón de ser de su diseño.
 
 ## Piezas impresas (`stl/`)
 
-| Pieza | Función | Cant. |
-|---|---|---|
-| `buje_<banda>` | Cubo de alimentación: sujeta los lados inferiores de los lazos a dos alturas. Tiene los 4 bornes rotulados A+, A−, B+ y B−, y la salida del coaxial al interior del tubo | 1 |
-| `tapa_<banda>` | Tapa del buje: protege los bornes y la línea de fase de la lluvia. Baja por el tubo y está abierta por abajo para drenar | 1 |
-| `tope_<banda>` | Remate del tubo: cruza los lados superiores de los lazos a dos alturas, sin que se toquen | 1 |
-| `reflector_<banda>` | Collarín del reflector. También sirve de **guía para taladrar** el tubo | 1 |
+| Pieza | Función |
+|---|---|
+| `tapon_<banda>` | Tapón de alimentación en la punta del tubo. Lleva los 4 bornes rotulados A+, A−, B+ y B− (tornillos de latón M6 en 2 m, M5 en 70 cm), con el lazo B 6 mm más bajo que el A. Dentro tiene una cámara para tuercas, terminales y línea de fase, y el coaxial sube por dentro del tubo. Se imprime boca abajo |
+| `guia_lazos_<banda>` | Collarín a la altura de los lados inferiores. Sirve de **guía para taladrar** el tubo en cruz y a dos alturas, y luego sujeta los hilos con prisioneros |
+| `guia_reflector_<banda>` | Lo mismo para las dos varillas del reflector (1/4") |
+| `plantilla_70cm` | Plantilla de 171 × 209 mm para doblar y comprobar el lazo de 70 cm (el de 2 m no cabe en una impresora) |
 
-![Piezas 2 m](docs/img/piezas_2m.png)
+![Piezas 70 cm](docs/img/piezas_70cm.png)
 
 Cómo imprimirlas:
-- **Material:** **ASA** (el mejor a la intemperie) o **PETG**. No uses PLA en exterior.
+- **Material:** **ASA** o **PETG** (nada de PLA en exterior).
 - **Parámetros:** 0.2 mm de capa, 4 perímetros, 40 % de relleno.
-- **Soportes:** no hacen falta. La tapa ya sale boca abajo.
+- **Soportes:** no hacen falta.
 
 ## Material (una antena)
 
 | | 2 m | 70 cm |
 |---|---|---|
-| Lazos | 2 pletinas de Al 10×2 de 1821 mm + 4 varillas roscadas M6 de 215 mm (inox. o latón) con 16 tuercas | 2 varillas de Al o latón Ø4 de 723 mm |
-| Reflector | 2 varillas de Al Ø4 de 986 mm | 2 varillas de Al Ø4 de 330 mm |
-| Línea de fase | RG-62 de 93 Ω, 403 mm en total (363 + 2×20) | RG-62, 136 mm en total (116 + 2×10) |
-| Mástil | Tubo de PVC Ø32, 2 m | Tubo de PVC Ø25, 1 m |
-| Tornillería | 2 × M4×20 + tuerca (tope), 2 × autorroscante 4.2×16 (buje y reflector al tubo), 4 × autorroscante M3×10 (prisioneros del reflector), 4 terminales de ojal M6 | 6 × M3×12 + tuerca (bornes y tope), 2 × autorroscante 4.2×13, 4 × autorroscante M3×8, 4 terminales de ojal M3 |
-| Otros | Coaxial de 50 Ω de baja pérdida, choque de RF, cinta autovulcanizante | Igual |
+| Lazos | 2 × 2.25 m de hilo de Cu #8 AWG (se usan 2234 mm) | 2 × 0.75 m de hilo #8 o de varilla de 3 mm (se usan 718 mm) |
+| Reflector | 2 varillas de Al Ø1/4" de 1005 mm | 2 de 335 mm |
+| Línea de fase | 46.5 cm de RG-62 | 18.5 cm de RG-62 |
+| Mástil | Tubo de PVC Ø32 de 2 m | Tubo de PVC Ø25 de 0.8 m |
+| Bornes | 4 tornillos M6×16 de latón, 8 tuercas, 8 arandelas, 4 terminales de ojal | 4 tornillos M5×12 de latón, etc. |
+| Otros | 3 autorroscantes de 4.2 mm, 8 autorroscantes M3, coaxial de 50 Ω, choque de RF, cinta autovulcanizante | Igual |
 
-Guía paso a paso: [docs/CONSTRUCCION.md](docs/CONSTRUCCION.md). Teoría y fuentes: [docs/TEORIA.md](docs/TEORIA.md). Pruebas: [docs/PRUEBAS.md](docs/PRUEBAS.md).
+Guías: [construcción](docs/CONSTRUCCION.md), [K5OE y fuentes](docs/TEORIA.md) y [pruebas](docs/PRUEBAS.md).
 
-## Estructura del repositorio
+## Estructura
 ```
-cad/eggbeater_piezas.scad   Piezas paramétricas (BAND = "2m" | "70cm", PART = buje|tapa|tope|reflector|montaje)
-cad/gen/                    Medidas eléctricas generadas desde la simulación
-stl/                        STL listos para imprimir
-sim/                        Modelo NEC2 (nec2c), optimización, gráficas y resultados.json
-scripts/                    Build (STL + renders) y generación de includes
-docs/                       Construcción, teoría, pruebas e imágenes
+cad/eggbeater_k5oe.scad   Piezas paramétricas (BAND = "2m" | "70cm"; PART = tapon | guia_lazos | guia_reflector | plantilla | montaje)
+stl/                      STL listos para imprimir
+sim/                      Modelo NEC2 de la geometría K5OE (eggbeater.py, k5oe.py), resultados y mazos .nec
+scripts/build.sh          Regenera STL, renders y gráficas
+docs/                     Construcción, teoría, pruebas e imágenes
 ```
-
-## Regenerar
-Necesitas `openscad`, `xvfb`, `python3` con matplotlib y Pillow, y para simular, `nec2c`.
-```bash
-make        # STL + imágenes + gráficas a partir de sim/resultados.json
-make sim    # simulación NEC2 + ajuste para satélites (~2 min) y después build
-```
-Si cambias el tubo, el conductor o los tornillos, los parámetros están al principio de `cad/eggbeater_piezas.scad`.
+`make` regenera las piezas y las gráficas. `make sim` repite la simulación NEC2 (necesita `nec2c`).
 
 ## Créditos
-- Diseño base: **EA5WA**, [Antena Eggbeater V2](https://www.ea5wa.com/antenas/antena-eggbeater-v2).
-- Eggbeater II: **K5OE**, Jerry Brown.
-- Teoría: **ON6WG/F5VIF**, [Eggbeater VHF/UHF](https://qsl.net/k/kd7tww/Antennas/Antenne%20Eggbeater-Engl-Part1-Full.pdf).
+Diseño eléctrico: **Jerry Brown, K5OE**, *Eggbeater II Omni LEO Antenna*. Las piezas impresas y la verificación NEC2 son de este repositorio.
