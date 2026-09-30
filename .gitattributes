@@ -1,0 +1,5 @@
+*.stl binary
+*.png binary
+*.scad text eol=lf
+*.nec  text eol=lf
+*.sh   text eol=lf
